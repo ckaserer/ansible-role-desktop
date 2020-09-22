@@ -39,7 +39,7 @@
     notify: "restart gdm"
     when:
       - autologin_user is defined
-      
+
   - name: Create backgrounds folder
     file:
       path: /usr/share/backgrounds/images

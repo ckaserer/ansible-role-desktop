@@ -11,4 +11,15 @@
         check_mode: true
         register: gdm
         failed_when: gdm.changed
+
+      - name: Check autologin
+        template:
+          src: gdm.custom.conf.j2
+          dest: /etc/gdm/custom.conf
+          mode: '0544'
+        vars:
+          autologin_user: vagrant
+        check_mode: true
+        register: autologin
+        failed_when: autologin.changed
 ...

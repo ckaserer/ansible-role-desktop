@@ -9,19 +9,27 @@ notifications:
     on_success: never
     on_failure: never
   slack:
-    secure: jUa3+cLKNqclhohsqfdbq+8LXLxvKSsxkgXN+ORMokNlgwH44GSlNmd2m9JL0YoD2ro6U/9nM/qfgD8skEX/xtNthfpR+0mq5fSojR9F5apJaqlfBD1mk28A21X3YHLQR4Cyy0bRO1vB7o3WJFpy7bRc7C9yBL05gkT+gyU9iHUzp575GR4rR7Y82vHKPEn1HmFsdND5DAX1JWNLZW5ppzGZREmbICJJGfesDPCjZbblxnhXKKaY0dJEQyhwx5ECLamxfubxrZJ8dRzAKFmZN3MActO+PXS5TXQWO37UjEhVp9m8tpzsTqFOULz+himfCXWxLr9hC/ZuOLZQuQ7e3892ya9eoU3y3bZ84OWHzC/etQtioW5C27PmsvZkVTen59VGmCx+DBvMGoFJX55F0YfSjJNSI4S0Ujf1bfMXyoDM9k9uwf5m9vMqHI+uBL09Z1s5hrUmgmWoWaxrd7qCXGlq3lWez/bPzCDv0bzjc9qouv/oONUFu1gmsdq/dVlM7ujBXQbpC0WN+3Lbj99SfXNAFWx3e7iCKIrkHbBVgCnpn1l3fiJ7YcTjc7YMikSDcpQgX6QHrpQHFgd7Vot7yQXwSJYrgzsgY0E/nqTx+xpN1Scy4yjvBpMrJl1r5F3NZZKUF2bwMT951yefBTAm+7CA7dIlvq4cpmjjE/b1mPo=
+    if: branch = master
+    rooms:
+      secure: BWrX9ouEd4DSaBeHun/8zWxiJCSUcL9ZDjIH+SkB3EFzP3XQ7prFIxuJtShFuPVYePbd9nPIwPWjeSr3sIhHttfDnMQ2gYIFe0ufhG/TiTnuAJDQaBZRMMlfPWAgJ4VmhISUngVdYiO4W+m3jIO8EVh3gpUvCKjyv6/HyCBZsXKEsmGVKFSXujiUNhqG8+wJnU3c5B93724yiboEsXuOI1zkxEkhjgvh1Zj+4SjjaMpTmisWEX6SwVuVExmB/WbisuauLYfUckztkGEWKIOAx4epJuvYQQqulparFwHMhWF/da8B592E76cpTihgBI9nNt4ZaLHWiSlU9r2PNg6uqrj5GuznjWy5WBTAZ8GH7BHhqkSx02v5R+6VnR2iIlfF7sUXIMrypdduAdYsamitK4VgS/SE83o3KAeou0IijXyvfz3lkJQ5rUVL7NUUrBrKVjDNfAOkNvaq3+Zl4CMeB+i9r0yFMdhlFYPCPH9bo3i9jNyXWNUXSjCXQGI2N3a74EINa8a8Nef0iyP0gqq1ZRuEtY61yIfyhT9XnxDobjhd+xs16d/iR47O3UfAXE2i4dvuSQLvvmhjRByASKdPPbmJ3IyXoVhsj+Uuj9f5iwtcPMlKu0qUQ8ovJCv+O6OSqDqOlTVWCRYYaCgpqAArazbA1JEB3IDOKBataSjIbGc=
+    template:
+      - "%{commit_subject}"
+      - build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) @%{branch}
+      - by %{author} %{result} in %{duration}
+    on_success: change
+    on_failure: always
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
 install:
-    - sudo apt-get update && sudo apt-get install -y bridge-utils dnsmasq-base ebtables
-      libvirt-bin libvirt-dev qemu-kvm qemu-utils ruby-dev
-    - vagrant_version=$(curl https://releases.hashicorp.com/vagrant/ | grep href | grep -v '\.\.' | 
-      head -1 | sed -E 's/.*([[:digit:]]+(\.[[:digit:]]+(\.[[:digit:]]+)+)+).*/\1/') && 
-      wget -nv https://releases.hashicorp.com/vagrant/${vagrant_version}/vagrant_${vagrant_version}_x86_64.deb
-    - sudo dpkg -i vagrant_${vagrant_version}_x86_64.deb
-    - sudo chown -R ${USER}:${USER} /home/travis /opt/vagrant/embedded/gems /var/run/libvirt
-    - vagrant --version
-    - vagrant plugin install vagrant-libvirt
-    - pip install -r requirements.txt
+  - sudo apt-get update && sudo apt-get install -y bridge-utils dnsmasq-base ebtables
+    libvirt-bin libvirt-dev qemu-kvm qemu-utils ruby-dev
+  - vagrant_version=$(curl https://releases.hashicorp.com/vagrant/ | grep href | grep
+    -v '\.\.' | head -1 | sed -E 's/.*([[:digit:]]+(\.[[:digit:]]+(\.[[:digit:]]+)+)+).*/\1/')
+    && wget -nv https://releases.hashicorp.com/vagrant/${vagrant_version}/vagrant_${vagrant_version}_x86_64.deb
+  - sudo dpkg -i vagrant_${vagrant_version}_x86_64.deb
+  - sudo chown -R ${USER}:${USER} /home/travis /opt/vagrant/embedded/gems /var/run/libvirt
+  - vagrant --version
+  - vagrant plugin install vagrant-libvirt
+  - pip install -r requirements.txt
 env:
   jobs:
     - SCENARIO=default
