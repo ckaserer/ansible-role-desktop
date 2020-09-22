@@ -1,0 +1,30 @@
+version: "~> 1.0"
+os: linux
+dist: bionic
+language: python
+python:
+  - '3.6'
+notifications:
+  email:
+    on_success: never
+    on_failure: never
+  slack:
+    secure: jUa3+cLKNqclhohsqfdbq+8LXLxvKSsxkgXN+ORMokNlgwH44GSlNmd2m9JL0YoD2ro6U/9nM/qfgD8skEX/xtNthfpR+0mq5fSojR9F5apJaqlfBD1mk28A21X3YHLQR4Cyy0bRO1vB7o3WJFpy7bRc7C9yBL05gkT+gyU9iHUzp575GR4rR7Y82vHKPEn1HmFsdND5DAX1JWNLZW5ppzGZREmbICJJGfesDPCjZbblxnhXKKaY0dJEQyhwx5ECLamxfubxrZJ8dRzAKFmZN3MActO+PXS5TXQWO37UjEhVp9m8tpzsTqFOULz+himfCXWxLr9hC/ZuOLZQuQ7e3892ya9eoU3y3bZ84OWHzC/etQtioW5C27PmsvZkVTen59VGmCx+DBvMGoFJX55F0YfSjJNSI4S0Ujf1bfMXyoDM9k9uwf5m9vMqHI+uBL09Z1s5hrUmgmWoWaxrd7qCXGlq3lWez/bPzCDv0bzjc9qouv/oONUFu1gmsdq/dVlM7ujBXQbpC0WN+3Lbj99SfXNAFWx3e7iCKIrkHbBVgCnpn1l3fiJ7YcTjc7YMikSDcpQgX6QHrpQHFgd7Vot7yQXwSJYrgzsgY0E/nqTx+xpN1Scy4yjvBpMrJl1r5F3NZZKUF2bwMT951yefBTAm+7CA7dIlvq4cpmjjE/b1mPo=
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+install:
+    - sudo apt-get update && sudo apt-get install -y bridge-utils dnsmasq-base ebtables
+      libvirt-bin libvirt-dev qemu-kvm qemu-utils ruby-dev
+    - vagrant_version=$(curl https://releases.hashicorp.com/vagrant/ | grep href | grep -v '\.\.' | 
+      head -1 | sed -E 's/.*([[:digit:]]+(\.[[:digit:]]+(\.[[:digit:]]+)+)+).*/\1/') && 
+      wget -nv https://releases.hashicorp.com/vagrant/${vagrant_version}/vagrant_${vagrant_version}_x86_64.deb
+    - sudo dpkg -i vagrant_${vagrant_version}_x86_64.deb
+    - sudo chown -R ${USER}:${USER} /home/travis /opt/vagrant/embedded/gems /var/run/libvirt
+    - vagrant --version
+    - vagrant plugin install vagrant-libvirt
+    - pip install -r requirements.txt
+env:
+  jobs:
+    - SCENARIO=default
+    - SCENARIO=autologin
+script:
+  - molecule test --scenario-name ${SCENARIO}

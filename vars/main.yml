@@ -1,0 +1,11 @@
+---
+packages:
+  - "@Xfce"
+  #- "@KDE"
+  #- "@KDE Plasma Workspaces"
+  - "@X Window System"
+  - "@Desktop"
+  - "@Fonts"
+  - "@General Purpose Desktop"
+  - chromium
+...

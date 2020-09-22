@@ -1,0 +1,12 @@
+---
+  - name: Converge
+    hosts: all
+    tasks:
+      - name: "Include ansible-role-desktop"
+        include_role:
+          name: "ansible-role-desktop"
+          apply:
+            become: true
+        vars:
+          autologin_user: vagrant
+...
